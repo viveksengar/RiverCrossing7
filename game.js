@@ -50,10 +50,56 @@ $(document).ready(function() {
                 right: "0px",
                 rightInBoat:"-250px",
                 leftInBoat: "-650px",
+                left: "-950px",
+                tempLocation: "-200px"
+                
+                
+            }
+        },
+        yellowchild2: { 
+            isRight: true, 
+            isInBoat: false,
+            location: {
+                right: "0px",
+                rightInBoat:"-250px",
+                leftInBoat: "-650px",
+                left: "-950px",
+                tempLocation: "-200px"
+            }
+        },
+        redchild2: { 
+            isRight: true, 
+            isInBoat: false,
+            location: {
+                right: "0px",
+                rightInBoat:"-250px",
+                leftInBoat: "-650px",
+                left: "-950px",
+                tempLocation: "-200px"
+            }
+        },
+        redchild: { 
+            isRight: true, 
+            isInBoat: false,
+            location: {
+                right: "0px",
+                rightInBoat:"-250px",
+                leftInBoat: "-650px",
+                left: "-950px",
+                tempLocation: "-200px"
+            }
+        },
+         yellowwoman: { 
+            isRight: true, 
+            isInBoat: false,
+            location: {
+                right: "0px",
+                rightInBoat:"-350px",
+                leftInBoat: "-650px",
                 left: "-950px"
             }
         },
-        yellowwoman: { 
+         yellowchild: { 
             isRight: true, 
             isInBoat: false,
             location: {
@@ -62,11 +108,10 @@ $(document).ready(function() {
                 leftInBoat: "-650px",
                 left: "-950px"
             }
-        },
+        }
     };
 
-    var DoOnletclick = function () {
-        console.log('boatData -----------', boatData);
+    var doOnletclick = function () {
         if (boatData.isRight) {
             moveBoatLeft()
         } else {
@@ -75,7 +120,7 @@ $(document).ready(function() {
     }
 
     var moveBoatLeft = function () {
-        $(getBoatId()).animate({marginLeft: boatData.leftLocation}, {duration: 2000,queue: false});
+        $(getElementId(boatData.id)).animate({marginLeft: boatData.leftLocation}, {duration: 2000,queue: false});
             boatData.isRight = false;
             if (getElementId(boatData.person.first.id)!= "") {
                 console.log("personId", getElementId(boatData.person.first.id));
@@ -90,7 +135,7 @@ $(document).ready(function() {
     }
 
     var moveBoatRight = function () {
-        $(getBoatId()).animate({marginLeft: boatData.rightLocation}, {duration: 2000,queue: false});
+        $(getElementId(boatData.id)).animate({marginLeft: boatData.rightLocation}, {duration: 2000,queue: false});
             boatData.isRight = true;
             if (getElementId(boatData.person.first.id)!= "") {
                 console.log("personId", getElementId(boatData.person.first.id));
@@ -108,85 +153,83 @@ $(document).ready(function() {
         return personId === "" ? "" : "#" + personId;
     }
 
-    var getBoatId = function () {
-        return boatData.id === "" ? "" : "#" + boatData.id;
+    var doOnClickPersonRightBoatRight = function (personId) {
+        if (personData[personId].isInBoat) {
+            doOnClickPersonRightInBoat(personId, personData[personId].location.right,personData[personId].location.right)
+            personData[personId].isInBoat = false;
+            if (boatData.person.first.id == personId) {
+                boatData.person.first.id = "";
+            } else {
+                boatData.person.second.id = "";
+            }
+            --boatData.noOfPersonInBoat;
+        } else if(! personData[personId].isInBoat && boatData.noOfPersonInBoat < 2){
+            doOnClickPersonRightNotInBoat(personId,personData[personId].location.tempLocation, personData[personId].location.rightInBoat)
+            personData[personId].isInBoat = true;
+            if (boatData.noOfPersonInBoat === 0 ) {
+                boatData.person.first.id = personId;
+            } else {
+                if(boatData.person.first.id == ''){
+                        boatData.person.first.id = personId; 
+                }else {boatData.person.second.id = personId;
+            }
+        }
+            boatData.noOfPersonInBoat++;
+        }
     }
 
-     var doOnPersonClick = function(personId){
-        
+    var doOnPersonClick = function(personId){
             if (personData[personId].isRight && boatData.isRight) {
                 doOnClickPersonRightBoatRight(personId)
             }
             if (!personData[personId].isRight && !boatData.isRight) {
                 doOnClickPersonLeftBoatLeft(personId)
             }
-        
     }
 
-    var doOnClickPersonRightBoatRight = function (personId) {
-        console.log('AAAAAA -------------', personData[personId].isInBoat);
-       if (!personData[personId].isInBoat) {
-                doOnClickPersonRightNotInBoat(personId, personData[personId].location.rightInBoat)
-                personData[personId].isInBoat = true;
-                if (boatData.noOfPersonInBoat === 0 ) {
-                    boatData.person.first.id = personId;
-                } else {
-                    boatData.person.second.id = personId;
-                }
-                
-                boatData.noOfPersonInBoat++;
-
-            } else {
-                doOnClickPersonRightInBoat(personId, personData[personId].location.right)
-                personData[personId].isInBoat = false;
-                if (boatData.person.first.id == personId) {
-                    boatData.person.first.id = "";
-                } else {
-                    boatData.person.second.id = "";
-                }
-                --boatData.noOfPersonInBoat;
-            }
-    }
-
-    var doOnClickPersonRightNotInBoat = function(personId,location) {
-        if (boatData.noOfPersonInBoat < 2) {
-            $(getElementId(personId)).animate({marginLeft: location}, 500);
-        }
+    var doOnClickPersonRightNotInBoat = function(personId,tempLocation,location) {
+        console.log("tempLocation",tempLocation,location);
+        $(getElementId(personId)).animate({marginTop: tempLocation}, 500),$(getElementId(personId)).animate({marginLeft: location}, 500);
     };
 
-     var doOnClickPersonRightInBoat = function(personId,location) {
-        $(getElementId(personId)).animate({marginLeft: location}, 500);
+    var doOnClickPersonRightInBoat = function(personId,location,tempLocation) {
+        console.log(location);
+        $(getElementId(personId)).animate({marginLeft: location}, 500),$(getElementId(personId)).animate({marginTop: tempLocation}, 500);
     };
 
     var doOnClickPersonLeftBoatLeft = function (personId) {
         if (personData[personId].isInBoat) {
-                doOnClickPersonLeftInBoat(personId, personData[personId].location.left)
-                personData[personId].isInBoat = false;
-                if (boatData.person.first.id == personId) {
-                    boatData.person.first.id = "";
-                } else {
-                    boatData.person.second.id = "";
-                }
-                --boatData.noOfPersonInBoat;
+            doOnClickPersonLeftInBoat(personId, personData[personId].location.left,personData[personId].location.right)
+            personData[personId].isInBoat = false;
+            if (boatData.person.first.id == personId) {
+                boatData.person.first.id = "";
             } else {
-                doOnClickPersonLeftNotInBoat(personId, personData[personId].location.leftInBoat)
-                personData[personId].isInBoat = true;
-                if (boatData.noOfPersonInBoat === 0 ) {
-                    boatData.person.first.id = personId;
-                } else {
-                    boatData.person.second.id = personId;
-                }   
-                boatData.noOfPersonInBoat++;
+                boatData.person.second.id = "";
             }
+            --boatData.noOfPersonInBoat;
+        } else if(! personData[personId].isInBoat && boatData.noOfPersonInBoat < 2){
+            doOnClickPersonLeftNotInBoat(personId, personData[personId].location.leftInBoat,personData[personId].location.tempLocation)
+            personData[personId].isInBoat = true;
+            if (boatData.noOfPersonInBoat === 0 ) {
+                boatData.person.first.id = personId;
+            } else {
+                if(boatData.person.first.id == ''){
+                        boatData.person.first.id = personId; 
+                }else {
+                    boatData.person.second.id = personId;
+            }   
+        }
+            boatData.noOfPersonInBoat++;
+        }
     }
 
-    var doOnClickPersonLeftInBoat = function(personId, location) {
-        $(getElementId(personId)).animate({marginLeft: location}, 500);
+    var doOnClickPersonLeftInBoat = function(personId, location,tempLocation) {
+        $(getElementId(personId)).animate({marginLeft: location}, 500),$(getElementId(personId)).animate({marginTop: tempLocation}, 500);
     };
 
-    var doOnClickPersonLeftNotInBoat = function(personId,location) {
+    var doOnClickPersonLeftNotInBoat = function(personId,location,tempLocation) {
         if (boatData.noOfPersonInBoat < 2) {
-        $(getElementId(personId)).animate({marginLeft: location}, 500);
+           $(getElementId(personId)).animate({marginTop: tempLocation}, 500),$(getElementId(personId)).animate({marginLeft: location}, 500);
         }
     };
 
@@ -199,16 +242,35 @@ $(document).ready(function() {
         console.log('Now number of person  in boat:: ', boatData.noOfPersonInBoat);
     });
     $("#redwoman").click(function() {
-        doOnPersonClick("redwoman")
+        doOnPersonClick("redwoman","personData.redwoman.location.tempLocation")
         console.log('Now number of person  in boat:: ', boatData.noOfPersonInBoat);
     });
-    $("#yellowwoman").click(function() {
+    $("#yellowchild2").click(function() {
+        doOnPersonClick("yellowchild2","personData.yellowchild2.location.tempLocation")
+        console.log('Now number of person  in boat:: ', boatData.noOfPersonInBoat);
+    });
+    $("#redchild2").click(function() {
+        doOnPersonClick("redchild2","personData.redchild2.location.tempLocation")
+        console.log('Now number of person  in boat:: ', boatData.noOfPersonInBoat);
+    });
+   $("#redchild").click(function() {
+        doOnPersonClick("redchild","personData.redchild.location.tempLocation")
+        console.log('Now number of person  in boat:: ', boatData.noOfPersonInBoat);
+    });
+   $("#yellowchild").click(function() {
+        doOnPersonClick("yellowchild")
+        console.log('Now number of person  in boat:: ', boatData.noOfPersonInBoat);
+    });
+   $("#yellowwoman").click(function() {
         doOnPersonClick("yellowwoman")
         console.log('Now number of person  in boat:: ', boatData.noOfPersonInBoat);
     });
    
+   
+   
+   
     $("#let").click(function() {
-        DoOnletclick();
+        doOnletclick();
     });
 
 });
