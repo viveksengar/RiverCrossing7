@@ -120,6 +120,7 @@ $(document).ready(function() {
     }
 
     var moveBoatLeft = function () {
+        if ((boatData.person.first.id=="thief"&&boatData.person.second.id=="police")||(boatData.person.first.id=="police" && boatData.person.second.id=="thief")) {
         $(getElementId(boatData.id)).animate({marginLeft: boatData.leftLocation}, {duration: 2000,queue: false});
             boatData.isRight = false;
             if (getElementId(boatData.person.first.id)!= "") {
@@ -133,6 +134,7 @@ $(document).ready(function() {
                 personData[boatData.person.second.id].isRight = false;
             }
     }
+}
 
     var moveBoatRight = function () {
         $(getElementId(boatData.id)).animate({marginLeft: boatData.rightLocation}, {duration: 2000,queue: false});
